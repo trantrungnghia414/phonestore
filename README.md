@@ -1,5 +1,10 @@
-Tôi muốn x  ây dựng một trang web bán điện thoại bằng php html css js bootstrap và mysql.
+# Phone Store
 
+Xây dựng một trang web bán đồ công nghệ bằng html, css, js, bootstrap, php và mysql.
+
+## Màu sắc chủ đạo
+
+```css
 :root {
   /* Màu chủ đạo */
   --primary-color: #e31837;     /* Đỏ chính */
@@ -14,51 +19,96 @@ Tôi muốn x  ây dựng một trang web bán điện thoại bằng php html c
   
   /* Màu nền */
   --bg-color: #ffffff;          /* Nền trắng */
-  --bg-light: #f8f9fa;         /* Nền xám nhạt */
+  --bg-light: #f8f9fa;          /* Nền xám nhạt */
   
   /* Màu accent */
   --success-color: #28a745;     /* Màu thành công */
   --error-color: #dc3545;       /* Màu lỗi */
 }
+```
+
+Cấu trúc thư mục
 
 phone_store/
 │
-├── admin/                     # Thư mục quản trị
-│   ├── categories/           # Quản lý danh mục
-│   ├── products/            # Quản lý sản phẩm
-│   ├── orders/              # Quản lý đơn hàng
-│   ├── users/               # Quản lý người dùng
-│   └── index.php           # Trang dashboard admin
+├── admin/                    # Thư mục quản trị
+│   ├── brands.php            # Quản lý thương hiệu
+│   ├── categories.php        # Quản lý danh mục
+│   ├── delete_review.php     # Xóa đánh giá
+│   ├── index.php             # Trang dashboard admin
+│   ├── orders.php            # Quản lý đơn hàng
+│   ├── products.php          # Quản lý sản phẩm
+│   ├── reviews.php           # Quản lý đánh giá
+│   └── users.php             # Quản lý người dùng
 │
 ├── assets/                   # Chứa tài nguyên static
-│   ├── images/             # Chứa hình ảnh
-│   └── uploads/            # Chứa ảnh upload
+│   ├── images/               # Chứa hình ảnh
+│   └── uploads/              # Chứa ảnh upload
 │
-├── config/
-│   └── database.php        # Cấu hình database
+├── auth/                     # Xác thực người dùng
+│   ├── google-oauth.php      # Đăng nhập bằng Google
+│   ├── login.php             # Đăng nhập
+│   ├── logout.php            # Đăng xuất
+│   ├── profile.php           # Hồ sơ người dùng
+│   └── register.php          # Đăng ký
 │
-├── includes/               # Chứa các file include
-│   ├── header.php
-│   ├── footer.php
-│   ├── navbar.php
-│   └── functions.php      # Các hàm tiện ích
+├── config/                   # Cấu hình
+│   └── database.php          # Cấu hình database
 │
-├── pages/                 # Các trang chính của website
-│   ├── home.php          # Trang chủ
-│   ├── products.php      # Trang danh sách sản phẩm
-│   ├── product-detail.php # Chi tiết sản phẩm
-│   ├── cart.php          # Giỏ hàng
-│   ├── checkout.php      # Thanh toán
-│   └── contact.php       # Liên hệ
+├── db/                       # Thư mục cơ sở dữ liệu
+│   └── dbdt.sql              # Tệp SQL
 │
-├── auth/                  # Xác thực người dùng
-│   ├── login.php
-│   └── register.php
+├── includes/                 # Chứa các file include
+│   ├── footer.php            # Footer
+│   ├── functions.php         # Các hàm tiện ích
+│   ├── header.php            # Header
+│   └── navbar.php            # Navbar
 │
-├── .htaccess             # Cấu hình Apache
-└── index.php             # File index chính
+├── pages/                    # Các trang chính của website
+│   ├── add-to-cart.php       # Thêm vào giỏ hàng
+│   ├── cart.php              # Giỏ hàng
+│   ├── checkout.php          # Thanh toán
+│   ├── contact.php           # Liên hệ
+│   ├── home.php              # Trang chủ
+│   ├── product-detail.php    # Chi tiết sản phẩm
+│   └── products.php          # Trang danh sách sản phẩm
+│
+├── .env                      # Cấu hình .env
+├── .gitignore                # Tệp .gitignore
+├── composer.json             # Tệp cấu hình Composer
+├── composer.lock             # Tệp khóa Composer
+├── index.php                 # File index chính
+├── README.md                 # Tệp README
+└── vendor/                   # Thư mục vendor của Composer
 
-//Đăng nhập bằng google - nghiatrandtnt2018@gmail.com
 
-https://console.cloud.google.com/welcome?inv=1&invt=AbjwnA&project=sage-inn-438000-n3
+Đăng nhập bằng Google
+Để đăng nhập bằng Google, bạn cần cấu hình Google Cloud Console với thông tin sau:
 
+Email: nghiaXXXXX@gmail.com
+Google Cloud Console: Google Cloud Console
+
+Hướng dẫn cài đặt
+
+1. Clone repository về máy:
+git clone https://github.com/your-username/phonestore.git
+
+2. Cài đặt các dependencies bằng Composer:
+composer install
+
+3. Tạo file .env từ file mẫu .env.example và cập nhật các thông tin cấu hình cần thiết:
+cp .env.example .env
+
+4. Import cơ sở dữ liệu từ file dbdt.sql vào MySQL bằng phpMyAdmin:
+
+Mở phpMyAdmin và chọn cơ sở dữ liệu bạn muốn import.
+Chọn tab "Import" và chọn file dbdt.sql.
+Nhấn "Go" để bắt đầu quá trình import.
+
+5. Khởi động server PHP:
+php -S localhost:8000
+
+6. Truy cập trang web tại http://localhost:8000.
+
+Đóng góp
+Nếu bạn muốn đóng góp cho dự án, vui lòng tạo pull request hoặc mở issue mới trên GitHub.
