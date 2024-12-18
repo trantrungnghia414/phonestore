@@ -136,11 +136,12 @@ phone_store/
 }
 ```
 
-Đóng góp
+## Đóng góp
+
 Nếu bạn muốn đóng góp cho dự án, vui lòng tạo pull request hoặc mở issue mới trên GitHub.
 
-Liên hệ
+## Liên hệ
 Email: contact@phonestore.com
-Hotline: 1900 1234
+Hotline: 1900 XXXX
 Địa chỉ: 126 Nguyễn Thiện Thành, Phường 5, Trà Vinh, Việt Nam
 Cảm ơn bạn đã sử dụng Phone Store!
