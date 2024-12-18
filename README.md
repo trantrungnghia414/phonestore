@@ -6,13 +6,13 @@ Phone Store là một trang web bán đồ công nghệ được xây dựng b�
 
 ## Mục lục
 
-- [Giới thiệu](#giới-thiệu)
-- [Tính năng](#tính-năng)
-- [Cài đặt](#cài-đặt)
-- [Cấu trúc thư mục](#cấu-trúc-thư-mục)
-- [Màu sắc chủ đạo](#màu-sắc-chủ-đạo)
-- [Đóng góp](#đóng-góp)
-- [Liên hệ](#liên-hệ)
+-   [Giới thiệu](#giới-thiệu)
+-   [Tính năng](#tính-năng)
+-   [Cài đặt](#cài-đặt)
+-   [Cấu trúc thư mục](#cấu-trúc-thư-mục)
+-   [Màu sắc chủ đạo](#màu-sắc-chủ-đạo)
+-   [Đóng góp](#đóng-góp)
+-   [Liên hệ](#liên-hệ)
 
 ## Giới thiệu
 
@@ -20,36 +20,41 @@ Phone Store là một nền tảng thương mại điện tử cho phép ngườ
 
 ## Tính năng
 
-- Quản lý sản phẩm, danh mục, thương hiệu
-- Giỏ hàng và thanh toán trực tuyến
-- Đăng nhập và đăng ký người dùng
-- Đánh giá và nhận xét sản phẩm
-- Quản lý đơn hàng
-- Đăng nhập bằng Google
+-   Quản lý sản phẩm, danh mục, thương hiệu
+-   Giỏ hàng và thanh toán trực tuyến
+-   Đăng nhập và đăng ký người dùng
+-   Đánh giá và nhận xét sản phẩm
+-   Quản lý đơn hàng
+-   Đăng nhập bằng Google
 
 ## Cài đặt
 
 1. Clone repository về máy:
+
     ```sh
     git clone https://github.com/your-username/phonestore.git
     ```
 
 2. Cài đặt các dependencies bằng Composer:
+
     ```sh
     composer install
     ```
 
 3. Tạo file [.env](http://_vscodecontentref_/1) từ file mẫu `.env.example` và cập nhật các thông tin cấu hình cần thiết:
+
     ```sh
     cp .env.example .env
     ```
 
 4. Import cơ sở dữ liệu từ file `dbdt.sql` vào MySQL bằng phpMyAdmin:
+
     - Mở phpMyAdmin và chọn cơ sở dữ liệu bạn muốn import.
     - Chọn tab "Import" và chọn file `dbdt.sql`.
     - Nhấn "Go" để bắt đầu quá trình import.
 
 5. Khởi động server PHP:
+
     ```sh
     php -S localhost:8000
     ```
@@ -119,17 +124,17 @@ phone_store/
   --primary-color: #e31837;     /* Đỏ chính */
   --primary-dark: #b71c1c;      /* Đỏ đậm */
   --primary-light: #ff5252;     /* Đỏ nhạt */
-  
+
   /* Màu phụ */
   --secondary-color: #f5f5f5;   /* Xám nhạt */
   --text-color: #333333;        /* Màu chữ chính */
   --light-text: #ffffff;        /* Màu chữ sáng */
   --dark-text: #000000;         /* Màu chữ tối */
-  
+
   /* Màu nền */
   --bg-color: #ffffff;          /* Nền trắng */
   --bg-light: #f8f9fa;          /* Nền xám nhạt */
-  
+
   /* Màu accent */
   --success-color: #28a745;     /* Màu thành công */
   --error-color: #dc3545;       /* Màu lỗi */
@@ -141,7 +146,8 @@ phone_store/
 Nếu bạn muốn đóng góp cho dự án, vui lòng tạo pull request hoặc mở issue mới trên GitHub.
 
 ## Liên hệ
-Email: contact@phonestore.com
-Hotline: 1900 XXXX
-Địa chỉ: 126 Nguyễn Thiện Thành, Phường 5, Trà Vinh, Việt Nam
-Cảm ơn bạn đã sử dụng Phone Store!
+
+-   Email: contact@phonestore.com
+-   Hotline: 1900 XXXX
+-   Địa chỉ: 126 Nguyễn Thiện Thành, Phường 5, Trà Vinh, Việt Nam
+-   Cảm ơn bạn đã sử dụng Phone Store!
