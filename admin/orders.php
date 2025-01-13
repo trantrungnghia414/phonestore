@@ -117,6 +117,17 @@ $orders = $conn->query($query)->fetch_all(MYSQLI_ASSOC);
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+
+        .btn-outline-success:hover {
+            background-color: #198754;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .btn-outline-success {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 
@@ -151,9 +162,9 @@ $orders = $conn->query($query)->fetch_all(MYSQLI_ASSOC);
                             <button class="btn btn-outline-primary">
                                 <i class="fas fa-filter me-2"></i>Lọc
                             </button>
-                            <button class="btn btn-outline-success">
+                            <a href="export-orders.php" class="btn btn-outline-success">
                                 <i class="fas fa-file-excel me-2"></i>Xuất Excel
-                            </button>
+                            </a>
                         </div>
                     </div>
 

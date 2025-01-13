@@ -30,34 +30,85 @@ $users = $users_result->fetch_all(MYSQLI_ASSOC);
 // Kiểm tra và xử lý thêm người dùng
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     $fullname = trim($_POST['fullname']);
-    $email = trim($_POST['email']);
+    $email = trim($_POST['email']); 
     $phone = trim($_POST['phone']);
     $password = trim($_POST['password']);
     
     // Kiểm tra các trường không được để trống
     if (empty($fullname) || empty($email) || empty($password)) {
-        // Thông báo lỗi nếu có trường trống
         echo "<div class='alert alert-danger'>Vui lòng điền đầy đủ thông tin!</div>";
     } else {
-        // Thực hiện thêm người dùng vào cơ sở dữ liệu
-        // ... mã thêm người dùng ...
+        // Kiểm tra email đã tồn tại chưa
+        $check_email = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $check_email->bind_param("s", $email);
+        $check_email->execute();
+        $result = $check_email->get_result();
+        
+        if ($result->num_rows > 0) {
+            echo "<div class='alert alert-danger'>Email đã tồn tại trong hệ thống!</div>";
+        } else {
+            // Mã hóa mật khẩu
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            
+            // Thêm người dùng mới
+            $insert_stmt = $conn->prepare("INSERT INTO users (fullname, email, phone, password, role) VALUES (?, ?, ?, ?, 'user')");
+            $insert_stmt->bind_param("ssss", $fullname, $email, $phone, $hashed_password);
+            
+            if ($insert_stmt->execute()) {
+                echo "<div class='alert alert-success'>Thêm người dùng thành công!</div>";
+                // Refresh trang sau 2 giây
+                echo "<script>setTimeout(function(){ window.location.href = 'users.php'; }, 2000);</script>";
+            } else {
+                echo "<div class='alert alert-danger'>Có lỗi xảy ra: " . $conn->error . "</div>";
+            }
+        }
     }
 }
 
-// Kiểm tra và xử lý cập nhật thông tin người dùng
+// Xử lý xóa người dùng
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
+    $user_id = $_POST['user_id'];
+    
+    $delete_stmt = $conn->prepare("DELETE FROM users WHERE id = ? AND role = 'user'");
+    $delete_stmt->bind_param("i", $user_id);
+    
+    if ($delete_stmt->execute()) {
+        echo "<div class='alert alert-success'>Xóa người dùng thành công!</div>";
+        echo "<script>setTimeout(function(){ window.location.href = 'users.php'; }, 2000);</script>";
+    } else {
+        echo "<div class='alert alert-danger'>Có lỗi xảy ra khi xóa người dùng!</div>";
+    }
+}
+
+// Hoàn thiện xử lý cập nhật thông tin người dùng
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
     $user_id = $_POST['user_id'];
     $fullname = trim($_POST['fullname']);
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
     
-    // Kiểm tra các trường không được để trống
     if (empty($fullname) || empty($email)) {
-        // Thông báo lỗi nếu có trường trống
         echo "<div class='alert alert-danger'>Vui lòng điền đầy đủ thông tin!</div>";
     } else {
-        // Thực hiện cập nhật thông tin người dùng
-        // ... mã cập nhật người dùng ...
+        // Kiểm tra email có bị trùng không (trừ email hiện tại của user)
+        $check_email = $conn->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+        $check_email->bind_param("si", $email, $user_id);
+        $check_email->execute();
+        $result = $check_email->get_result();
+        
+        if ($result->num_rows > 0) {
+            echo "<div class='alert alert-danger'>Email đã tồn tại trong hệ thống!</div>";
+        } else {
+            $update_stmt = $conn->prepare("UPDATE users SET fullname = ?, email = ?, phone = ? WHERE id = ? AND role = 'user'");
+            $update_stmt->bind_param("sssi", $fullname, $email, $phone, $user_id);
+            
+            if ($update_stmt->execute()) {
+                echo "<div class='alert alert-success'>Cập nhật thông tin thành công!</div>";
+                echo "<script>setTimeout(function(){ window.location.href = 'users.php'; }, 2000);</script>";
+            } else {
+                echo "<div class='alert alert-danger'>Có lỗi xảy ra khi cập nhật thông tin!</div>";
+            }
+        }
     }
 }
 ?>
@@ -176,8 +227,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                                                 <i class="fas fa-ellipsis-v"></i>
                                             </button>
                                             <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Chỉnh sửa</a></li>
-                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Xóa</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editUserModal<?php echo $user['id']; ?>">
+                                                    <i class="fas fa-edit me-2"></i>Chỉnh sửa
+                                                </a></li>
+                                                <li>
+                                                    <form method="POST" class="delete-user-form" onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?');">
+                                                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                                                        <input type="hidden" name="delete_user" value="1">
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="fas fa-trash me-2"></i>Xóa
+                                                        </button>
+                                                    </form>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
@@ -209,23 +270,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addUserForm">
+                    <form id="addUserForm" method="POST" action="">
                         <div class="mb-3">
                             <label class="form-label">Họ và tên</label>
-                            <input type="text" class="form-control" required>
+                            <input type="text" name="fullname" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" required>
+                            <input type="email" name="email" class="form-control" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Số điện thoại</label>
-                            <input type="tel" class="form-control">
+                            <input type="tel" name="phone" class="form-control" pattern="[0-9]{10}">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Mật khẩu</label>
-                            <input type="password" class="form-control" required>
+                            <input type="password" name="password" class="form-control" required minlength="6">
                         </div>
+                        <input type="hidden" name="add_user" value="1">
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -235,6 +297,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             </div>
         </div>
     </div>
+
+    <!-- Modal chỉnh sửa người dùng -->
+    <?php foreach ($users as $user): ?>
+    <div class="modal fade" id="editUserModal<?php echo $user['id']; ?>" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa thông tin người dùng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="">
+                        <input type="hidden" name="user_id" value="<?php echo $user['id']; ?>">
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên</label>
+                            <input type="text" name="fullname" class="form-control" required 
+                                   value="<?php echo htmlspecialchars($user['fullname']); ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required 
+                                   value="<?php echo htmlspecialchars($user['email']); ?>"
+                                   pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" name="phone" class="form-control" pattern="[0-9]{10}"
+                                   value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>">
+                        </div>
+                        <input type="hidden" name="edit_user" value="1">
+                        <div class="text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php endforeach; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
